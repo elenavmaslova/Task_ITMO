@@ -66,11 +66,12 @@ def min_area_residential(houses: list[dict]) -> str:
     :param houses: Список словарей с данными о домах.
     :return: Адрес дома с наименьшим средним количеством квадратных метров жилой площади на одного жильца.
     """
-    min_ = float("+inf")
+    _min = float("+inf")
     for house in houses:
-        if (float(house["area_residential"]) / float(house["population"])) < min_:
-            min_ = float(house["area_residential"]) / float(house["population"])
+        if (house["area_residential"] / house["population"]) < _min:
+            _min = house["area_residential"] / house["population"] 
             return (house['house_address'])
+            break
 
 houses = read_file("housing_data.csv")
 print(houses)
