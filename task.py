@@ -13,6 +13,11 @@ def read_file(filename: str) -> list[dict]:
         # Чтение данных
         for row in reader:
             results.append(row)
+        for res in results:
+            res['floor_count'] = int(res['floor_count'])
+            res['population'] = int(res['population'])
+            res['heating_value'] = float(res['heating_value'])
+            res['area_residential'] = float(res['area_residential'])
         return results
 
 def classify_house(floor_count: int) -> str:
@@ -24,23 +29,17 @@ def classify_house(floor_count: int) -> str:
     :param floor_count: Количество этажей в доме.
     :return: Категория дома в виде строки: "Малоэтажный", "Среднеэтажный" или "Многоэтажный".
     """
-    try:
-        if not isinstance(floor_count, int):
-            raise TypeError
-        if floor_count <= 0:
-            raise ValueError
-    except TypeError:
-        print("Ошибка: Введено не число!")
-    except ValueError:
-        print("Ошибка: Введено некорректное число!")
-    else:
-        if 0 < floor_count < 6:
-            return "Малоэтажный"
-        elif 5 < floor_count < 17:
-            return "Среднеэтажный"
-        elif floor_count > 16:
-            return "Многоэтажный"
 
+    if not isinstance(floor_count, int):
+        print("Ошибка: Введено не число!")
+    elif floor_count <= 0:
+        print("Ошибка: Введено некорректное число!")
+    elif 0 < floor_count < 6:
+        return "Малоэтажный"
+    elif 5 < floor_count < 17:
+        return "Среднеэтажный"
+    elif floor_count > 16:
+        return "Многоэтажный"
 def get_classify_houses(houses: list[dict]) -> list[str]:
     """Классифицирует дома на основе количества этажей.
 
@@ -49,7 +48,7 @@ def get_classify_houses(houses: list[dict]) -> list[str]:
     """
     category_house = []
     for house in houses:
-        category_house.append(classify_house(int(house["floor_count"])))
+        category_house.append(classify_house(house["floor_count"]))
     return category_house
 
 def get_count_house_categories(categories: list[str]) -> dict[str, int]:
@@ -67,13 +66,13 @@ def min_area_residential(houses: list[dict]) -> str:
     :param houses: Список словарей с данными о домах.
     :return: Адрес дома с наименьшим средним количеством квадратных метров жилой площади на одного жильца.
     """
-    address = ""
-    min = 10000
+    min_ = float("+inf")
     for house in houses:
-        if (float(house["area_residential"]) / float(house["population"])) < min:
-            min = float(house["area_residential"]) / float(house["population"])
-            return (f" Адрес дома с наименьшим средним количеством квадратных метров жилой площади на одного жильца. {house['house_address']}")
+        if (float(house["area_residential"]) / float(house["population"])) < min_:
+            min_ = float(house["area_residential"]) / float(house["population"])
+            return (house['house_address'])
 
 houses = read_file("housing_data.csv")
+print(houses)
 print(get_count_house_categories(get_classify_houses(houses)))
 print(min_area_residential(houses))
